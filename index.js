@@ -7,6 +7,8 @@ const Product = require('./models/product');
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.use(express.urlencoded({extended:true}))
+//Returns middleware that only parses urlencoded bodies and only looks at requests where the Content-Type header matches the type option
 
 mongoose.connect('mongodb://localhost:27017/farmStand', {useNewUrlParser:true, useUnifiedTopology:true})
 .then(()=> {
@@ -28,12 +30,27 @@ app.get('/products', async (req, res) => {
    //res.send(products) displays all product data as json
 })
 
+app.get('/products/new', (req,res) =>{
+    res.render('products/new');
+})
+
+app.post('/products', async (req,res) =>{
+console.log(req.body);  //req.body will ne undefined w/o app.use(express.urlencoded({extended:true}))
+const newProduct = new Product(req.body); //not the right way to save data but quick for demo purpose  
+await newProduct.save();
+console.log(newProduct);
+//always redirect after a post request
+res.redirect(`/products/${newProduct._id}`)
+})
+
 app.get('/products/:id', async (req,res) =>{
     const {id} = req.params;
     const product = await Product.findById(id);
     //console.log(product)
-    res.render('products/show',{product})
+    res.render('products/show',{product});
 })
+
+
    
 
 
