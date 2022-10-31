@@ -23,9 +23,16 @@ app.listen(3000, () => {
 
 app.get('/products', async (req, res) => {
     const products = await Product.find({})
-    console.log(products)
+    //console.log(products)
     res.render('products/index', {products})
    //res.send(products) displays all product data as json
+})
+
+app.get('/products/:id', async (req,res) =>{
+    const {id} = req.params;
+    const product = await Product.findById(id);
+    //console.log(product)
+    res.render('products/show',{product})
 })
    
 
