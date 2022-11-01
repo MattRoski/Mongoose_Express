@@ -49,13 +49,6 @@ app.get('/products/:id', async (req,res) =>{
     res.render('products/show',{product});
 })
 
-app.put('/products/:id', async (req,res) =>{
-    const {id} = req.params;
-    const product = await Product.findByIdAndUpdate(id, req.body, {runValidators:true, new:true}); //need await here or will break everything. page will load faster than the id can be accessed
-    res.redirect(`/products/${product._id}`)
-    //always redirect after update
-})
-
 app.get('/products/:id/edit', async (req,res) =>{
     const {id} = req.params;
     const product = await Product.findById(id);
@@ -63,6 +56,19 @@ app.get('/products/:id/edit', async (req,res) =>{
 
 })
 
+
+app.put('/products/:id', async (req,res) =>{
+    const {id} = req.params;
+    const product = await Product.findByIdAndUpdate(id, req.body, {runValidators:true, new:true}); //need await here or will break everything. page will load faster than the id can be accessed
+    res.redirect(`/products/${product._id}`)
+    //always redirect after update
+})
+
+app.delete('/products/:id', async (req,res) =>{
+    const {id} = req.params;
+    const deletedProduct = await Product.findByIdAndDelete(id);
+    res.redirect('/products');
+})
 
 
 app.listen(3000, () => {
